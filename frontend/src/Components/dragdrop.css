@@ -1,0 +1,8 @@
+.characters {
+  display: flex;
+  gap: 20px;
+}
+.Board {
+  border: 1px solid black;
+  height: 100px;
+}

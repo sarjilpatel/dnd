@@ -2,7 +2,22 @@
   display: flex;
   gap: 20px;
 }
+
 .Board {
   border: 1px solid black;
-  height: 100px;
+  height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  padding: 20px;
+  min-width: 500px;
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5rem;
 }

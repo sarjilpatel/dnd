@@ -1,21 +1,20 @@
 const Character = require("../models/characterModel");
 
 const evaluate = async (str) => {
+  console.log(str);
   let newStr = "";
-
-  for (let index = 0; index < str.length; index++) {
-    const c = str[index];
-    if (Number.isInteger(c)) {
-      newStr += c;
-    } else {
+  if (Number.isInteger(Number.parseInt(str))) {
+    return Number.parseInt(str);
+  } else {
+    for (let index = 0; index < str.length; index++) {
+      const c = str[index];
       const char = await Character.findOne({ character: c });
       if (char) {
         newStr += char.value;
       }
     }
+    return eval(newStr);
   }
-  console.log(newStr);
-  return eval(newStr);
 };
 
 exports.calculate = async (req, res) => {
@@ -47,7 +46,8 @@ exports.calculate = async (req, res) => {
     var ans1 = 0;
     var ans2 = 0;
     await evaluate(strArr[0]).then((res) => (ans1 = res));
-    console.log(operator);
+    // console.log(operator);
+    // console.log(strArr[0], strArr[1]);
     await evaluate(strArr[1]).then((res) => (ans2 = res));
 
     if (operator == ">") {
@@ -57,7 +57,6 @@ exports.calculate = async (req, res) => {
     } else if (operator == "=") {
       ans = ans1 == ans2;
     }
-    console.log(ans);
     res.status(200).json({
       success: true,
       ans,

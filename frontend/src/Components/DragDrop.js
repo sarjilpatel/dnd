@@ -137,12 +137,10 @@ const DragDrop = () => {
     });
     console.log(dataStr);
 
-    await axios
-      .post("http://localhost:5000/api/v1/calculate", { str: dataStr })
-      .then((res) => {
-        console.log(res.data.ans);
-        alert(res.data.ans);
-      });
+    await axios.post("/api/v1/calculate", { str: dataStr }).then((res) => {
+      console.log(res.data.ans);
+      alert(res.data.ans);
+    });
 
     dataStr = "";
   };

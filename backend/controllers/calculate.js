@@ -5,9 +5,13 @@ const evaluate = async (str) => {
 
   for (let index = 0; index < str.length; index++) {
     const c = str[index];
-    const char = await Character.findOne({ character: c });
-    if (char) {
-      newStr += char.value;
+    if (Number.isInteger(c)) {
+      newStr += c;
+    } else {
+      const char = await Character.findOne({ character: c });
+      if (char) {
+        newStr += char.value;
+      }
     }
   }
   console.log(newStr);

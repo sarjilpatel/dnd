@@ -42,9 +42,9 @@ exports.calculate = async (req, res) => {
     }
     var ans1 = 0;
     var ans2 = 0;
-    evaluate(strArr[0]).then((res) => (ans1 = res));
+    await evaluate(strArr[0]).then((res) => (ans1 = res));
     console.log(operator);
-    evaluate(strArr[1]).then((res) => (ans2 = res));
+    await evaluate(strArr[1]).then((res) => (ans2 = res));
 
     if (operator == ">") {
       ans = ans1 > ans2;

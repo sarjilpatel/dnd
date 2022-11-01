@@ -21,7 +21,7 @@ exports.calculate = async (req, res) => {
 
     let strArr = [];
     let operator = "";
-    let ans = false;
+    var ans = false;
 
     if (str.includes(">")) {
       strArr = str.split(">");
@@ -32,11 +32,19 @@ exports.calculate = async (req, res) => {
     } else if (str.includes("=")) {
       strArr = str.split("=");
       operator = "=";
+    } else {
+      await evaluate(str).then((res) => (ans = res));
+      console.log(ans);
+      return res.status(200).json({
+        success: true,
+        ans,
+      });
     }
-
-    const ans1 = evaluate(strArr[0]);
+    var ans1 = 0;
+    var ans2 = 0;
+    evaluate(strArr[0]).then((res) => (ans1 = res));
     console.log(operator);
-    const ans2 = evaluate(strArr[1]);
+    evaluate(strArr[1]).then((res) => (ans2 = res));
 
     if (operator == ">") {
       ans = ans1 > ans2;
@@ -45,7 +53,7 @@ exports.calculate = async (req, res) => {
     } else if (operator == "=") {
       ans = ans1 == ans2;
     }
-
+    console.log(ans);
     res.status(200).json({
       success: true,
       ans,

@@ -16,4 +16,10 @@ const calculateRoutes = require("./routes/calculatorRoutes");
 //using Routes
 app.use("/api/v1", calculateRoutes);
 
+app.use(express.static(path.join(__dirname, "../frontend/build")));
+
+app.get("*", (req, res) => {
+  res.sendFile(path.resolve(__dirname, "../frontend/build/index.html"));
+});
+
 module.exports = app;

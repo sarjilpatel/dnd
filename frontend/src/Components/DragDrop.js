@@ -58,13 +58,13 @@ const charactersList = [
     _id: "minus",
     character: "-",
     isOperator: true,
-    url: "https://res.cloudinary.com/djnkkdrhb/image/upload/v1667217317/dnd/div_n616d2.png",
+    url: "https://res.cloudinary.com/djnkkdrhb/image/upload/v1667217317/dnd/-_qu6qvd.png",
   },
   {
     _id: "635f817b65280ed7141c33c4",
     character: "/",
     isOperator: true,
-    url: "https://res.cloudinary.com/djnkkdrhb/image/upload/v1667217317/dnd/qukjcv55vw4ynj13e7sh.png",
+    url: "https://res.cloudinary.com/djnkkdrhb/image/upload/v1667217317/dnd/div_n616d2.png",
   },
   {
     _id: "635f818365280ed7141c33c7",
@@ -75,19 +75,21 @@ const charactersList = [
   {
     _id: "635f818965280ed7141c33ca",
     character: "=",
+    isCmp: true,
     isOperator: true,
     url: "https://res.cloudinary.com/djnkkdrhb/image/upload/v1667217317/dnd/eq_mnbitx.png",
   },
   {
     _id: "635f818f65280ed7141c33cd",
     character: ">",
+    isCmp: true,
     isOperator: true,
     url: "https://res.cloudinary.com/djnkkdrhb/image/upload/v1667217317/dnd/gt_rpmymh.png",
   },
   {
     _id: "635f819765280ed7141c33d0",
     character: "<",
-
+    isCmp: true,
     isOperator: true,
     url: "https://res.cloudinary.com/djnkkdrhb/image/upload/v1667217317/dnd/lt_ytcgsu.png",
   },
@@ -95,8 +97,9 @@ const charactersList = [
 
 const DragDrop = () => {
   const [board, setBoard] = useState([]);
-  const [charFlag, setCharFlag] = useState(true);
-  const [oprFlag, setOprFlag] = useState(false);
+  var dataStr = "";
+  var flag = false;
+  var cmp = false;
 
   const [{ isOver }, drop] = useDrop(() => ({
     accept: "div",
@@ -107,20 +110,66 @@ const DragDrop = () => {
   }));
 
   const addImageToBoard = (id) => {
-    // const characterList = charactersList.filter(
-    //   (picture) => id === picture._id
-    // );
-    const flag = oprFlag;
-
-    if (id.isOperator === oprFlag) {
-      setOprFlag(!flag);
-      setBoard((board) => [...board, id]);
-      console.log(id.isOperator);
-      console.log(oprFlag);
-      console.log(board);
+    if (id.isOperator === flag) {
+      if (id.isCmp) {
+        if (!cmp) {
+          flag = !flag;
+          setBoard((board) => [...board, id]);
+        }
+        cmp = true;
+      } else {
+        flag = !flag;
+        setBoard((board) => [...board, id]);
+      }
     } else {
       console.log(board);
     }
+  };
+
+  const handleEvaluateClick = async () => {
+    if (board[board.length - 1]?.isOperator) {
+      alert("enter valid expression");
+      return;
+    }
+
+    board.map((picture) => {
+      dataStr += picture.character;
+    });
+    console.log(dataStr);
+
+    await axios
+      .post("http://localhost:5000/api/v1/calculate", { str: dataStr })
+      .then((res) => {
+        console.log(res.data.ans);
+        alert(res.data.ans);
+      });
+
+    dataStr = "";
+  };
+
+  const handleRHSIntClick = async () => {
+    if (
+      !board[board.length - 1]?.isOperator ||
+      board[board.length - 1]?.isInteger
+    ) {
+      alert("This will only work if comparison operator is at last");
+      return;
+    }
+    var number = prompt("Enter Number: ");
+    const item = {
+      character: number,
+      _id: number,
+      isInteger: true,
+    };
+    setBoard((board) => [...board, item]);
+  };
+
+  const handleDeleteElement = (picture) => {
+    if (picture.isCmp) {
+      cmp = false;
+    }
+    const newArr = board.filter((e) => e._id !== picture._id);
+    setBoard(newArr);
   };
 
   return (
@@ -141,10 +190,27 @@ const DragDrop = () => {
         })}
       </div>
 
-      <div className="Board" ref={drop}>
-        {board.map((picture) => {
-          return <Element url={picture.url} id={picture} />;
-        })}
+      <div className="board__wrapper">
+        <div className="Board" ref={drop}>
+          {board.map((picture) => {
+            return picture.url ? (
+              <div className="board__element">
+                <Element url={picture.url} id={picture} />
+                <span onClick={() => handleDeleteElement(picture)}>X</span>
+              </div>
+            ) : (
+              <div className="board__element">
+                <div className="number">{picture.character}</div>
+                <span onClick={() => handleDeleteElement(picture)}>X</span>
+              </div>
+            );
+          })}
+        </div>
+        <button onClick={handleRHSIntClick}>RHS INTEGER</button>
+      </div>
+
+      <div className="Button">
+        <button onClick={handleEvaluateClick}>Evaluate</button>
       </div>
     </div>
   );

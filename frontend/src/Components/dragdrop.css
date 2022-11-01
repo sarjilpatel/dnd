@@ -21,3 +21,48 @@
   align-items: center;
   gap: 5rem;
 }
+
+button {
+  background-color: rgb(122, 122, 252);
+  font-size: 3rem;
+  color: white;
+  height: 7rem;
+  width: 14rem;
+}
+
+button:hover {
+  cursor: pointer;
+}
+
+.board__wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 3rem;
+}
+
+.number {
+  height: 150px;
+  width: 150px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: yellow;
+  font-size: 50px;
+  font-weight: 500;
+}
+.board__element {
+  position: relative;
+}
+span {
+  position: absolute;
+  right: 5px;
+  top: 5px;
+  border-radius: 50%;
+  height: 20px;
+  width: 20px;
+  background-color: wheat;
+}
+span:hover {
+  cursor: pointer;
+}
